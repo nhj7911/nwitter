@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import {
-  getAuth,
+  // getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
 } from "firebase/auth";
+import { auth } from "fbase";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +30,7 @@ const Auth = () => {
     event.preventDefault();
     try {
       let data;
-      const auth = getAuth();
+      // const auth = getAuth();
       if (newAccount) {
         data = await createUserWithEmailAndPassword(auth, email, password);
       } else {
@@ -38,7 +42,19 @@ const Auth = () => {
     }
   };
   const toggleAccount = () => setNewAccount((prev) => !prev); //이전의 값을 가져와서 그 값의 반대를 리턴
-
+  const onSocialClick = async (event) => {
+    // console.log(event.target.name);
+    const {
+      target: { name },
+    } = event; // ES6 형식
+    let provider;
+    if (name === "google") {
+      provider = new GoogleAuthProvider();
+    } else if (name === "github") {
+      provider = new GithubAuthProvider();
+    }
+    await signInWithPopup(auth, provider);
+  };
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -70,8 +86,12 @@ const Auth = () => {
           : "Don't have an account yet? Create Account"}
       </span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button onClick={onSocialClick} name="google">
+          Continue with Google
+        </button>
+        <button onClick={onSocialClick} name="github">
+          Continue with Github
+        </button>
       </div>
     </div>
   );
