@@ -9,7 +9,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newAccount, setNewAccount] = useState(true);
-
+  const [error, setError] = useState("");
   const onChange = (event) => {
     //console.log(event.target.name); // onChange 이벤트 발생시 email, password를 콘솔에 출력
     // event로 부터 target을 받아오고 name과 value를 받아옴
@@ -34,9 +34,11 @@ const Auth = () => {
       }
       console.log(data);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
+  const toggleAccount = () => setNewAccount((prev) => !prev); //이전의 값을 가져와서 그 값의 반대를 리턴
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -56,8 +58,17 @@ const Auth = () => {
           value={password}
           onChange={onChange}
         />
-        <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
+        <input
+          type="submit"
+          value={newAccount ? "Create Account" : "Sign In"}
+        />
       </form>
+      {error}
+      <span onClick={toggleAccount}>
+        {newAccount
+          ? "Do you already have an account? Sign In"
+          : "Don't have an account yet? Create Account"}
+      </span>
       <div>
         <button>Continue with Google</button>
         <button>Continue with Github</button>
